@@ -34,6 +34,10 @@ git clone --depth 1 https://github.com/firker/diy-ziyong.git package/diy-ziyong
 # 零散 luci 应用
 git clone --depth 1 https://github.com/DustReliant/luci-app-filetransfer.git package/luci-app-filetransfer
 git clone --depth 1 https://github.com/mchome/luci-app-vlmcsd.git package/luci-app-vlmcsd
+# vlmcsd 守护进程包（luci-app-vlmcsd 的 DEPENDS；其仓库自带不含 vlmcsd，需单独拉取，
+# 否则 make defconfig 选不中 vlmcsd，package/install 阶段 apk 报 "no such package: vlmcsd"）
+git clone --depth 1 https://github.com/mchome/openwrt-vlmcsd.git package/vlmcsd
+[ -f package/vlmcsd/Makefile ] || { echo "ERROR: vlmcsd 拉取失败"; exit 1; }
 git clone --depth 1 https://github.com/linkease/istore.git package/istore
 git clone --depth 1 https://github.com/destan19/OpenAppFilter.git package/OpenAppFilter
 
