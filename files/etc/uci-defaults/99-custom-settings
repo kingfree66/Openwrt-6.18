@@ -1,0 +1,12 @@
+#!/bin/sh
+# 首次开机执行：默认主题设为 argon，主机名
+
+# luci-theme-bootstrap 自带的 30_luci-theme-bootstrap 会把默认主题设为 bootstrap，
+# 这里执行顺序靠后（99），强制改回 argon
+uci set luci.main.mediaurlbase='/luci-static/argon'
+uci commit luci
+
+uci set system.@system[0].hostname='OpenWrt-King'
+uci commit system
+
+exit 0
