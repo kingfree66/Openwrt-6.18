@@ -10,8 +10,3 @@
 - 默认主题通过 `files/etc/uci-defaults/99-custom-settings` 在首次开机设置（官方无 LEDE 的 default-settings 包）
 - ssr-plus 的 Mihomo 选项默认关闭，避免与 mihomo-meta 文件冲突（与 LEDE 版同）
 - luci-app-adbyby-plus 暂无可靠的官方源，`make defconfig` 会静默跳过，不影响编译
-
-## 使用
-
-1. 在 GitHub 网页新建 `.github/workflows/6.18.yml`，内容见仓库外的 `6.18.yml`（随仓库说明提供，GitHub App 无 workflow 写权限，需手动创建）
-2. Actions → OpenWrt-6.18 → Run workflow 手动触发
