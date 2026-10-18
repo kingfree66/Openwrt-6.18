@@ -33,15 +33,6 @@ git clone --depth 1 https://github.com/firker/diy-ziyong.git package/diy-ziyong
 
 # 零散 luci 应用
 git clone --depth 1 https://github.com/DustReliant/luci-app-filetransfer.git package/luci-app-filetransfer
-git clone --depth 1 https://github.com/mchome/luci-app-vlmcsd.git package/luci-app-vlmcsd
-# vlmcsd 守护进程包（luci-app-vlmcsd 的 DEPENDS；其仓库自带不含 vlmcsd，需单独拉取，
-# 否则 make defconfig 选不中 vlmcsd，package/install 阶段 apk 报 "no such package: vlmcsd"）
-git clone --depth 1 https://github.com/mchome/openwrt-vlmcsd.git package/vlmcsd
-[ -f package/vlmcsd/Makefile ] || { echo "ERROR: vlmcsd 拉取失败"; exit 1; }
-# vlmcsd 版本修复（run #3 38920525529 失败）：上游 Makefile 的 PKG_VERSION=svn1112
-# 产生的包版本 "svn1112-r1" 被 OpenWrt 6.18 的 apk 打包校验拒绝（package version is invalid，
-# 版本号首字母必须为数字；旧 opkg 无此校验）。改成纯数字版本，其余不动。
-sed -i 's/^PKG_VERSION=svn1112$/PKG_VERSION:=1112/' package/vlmcsd/Makefile
 git clone --depth 1 https://github.com/linkease/istore.git package/istore
 git clone --depth 1 https://github.com/destan19/OpenAppFilter.git package/OpenAppFilter
 
