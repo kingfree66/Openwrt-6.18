@@ -34,7 +34,6 @@ git clone --depth 1 https://github.com/firker/diy-ziyong.git package/diy-ziyong
 # 零散 luci 应用
 git clone --depth 1 https://github.com/DustReliant/luci-app-filetransfer.git package/luci-app-filetransfer
 git clone --depth 1 https://github.com/linkease/istore.git package/istore
-git clone --depth 1 https://github.com/destan19/OpenAppFilter.git package/OpenAppFilter
 
 # OpenClash
 git clone --depth 1 --single-branch https://github.com/vernesong/OpenClash.git /tmp/OpenClash
