@@ -1,0 +1,20 @@
+{
+	"admin/status": {
+		"order": 10
+	},
+	"admin/system": {
+		"order": 20
+	},
+	"admin/store": {
+		"order": 30
+	},
+	"admin/services": {
+		"order": 40
+	},
+	"admin/network": {
+		"order": 50
+	},
+	"admin/vpn": {
+		"order": 60
+	}
+}
