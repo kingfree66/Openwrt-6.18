@@ -20,4 +20,7 @@ rm -rf ./package/diy-ziyong/smartdns
 # uci-defaults 脚本必须可执行（经 GitHub API 推送的文件默认无执行位，这里补上）
 chmod +x ./files/etc/uci-defaults/99-custom-settings
 
+# 去掉 luci-light 对 luci-theme-bootstrap 的硬依赖（我们不用 bootstrap/material 主题）
+sed -i '/+luci-theme-bootstrap/d' ./feeds/luci/collections/luci-light/Makefile
+
 echo "DIY part 2 done"
