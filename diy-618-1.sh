@@ -21,6 +21,8 @@ git clone --depth 1 https://github.com/Openwrt-Passwall/openwrt-passwall2.git pa
 # 主题（argon / kucat 为 config 中启用的）
 git clone --depth 1 https://github.com/jerrykuku/luci-theme-argon.git package/luci-theme-argon
 git clone --depth 1 https://github.com/sirpdboy/luci-theme-kucat.git package/luci-theme-kucat
+git clone --depth 1 https://github.com/zzsj0928/luci-theme-liquid.git package/luci-theme-liquid
+git clone --depth 1 https://github.com/rchen14b/luci-theme-glass.git package/luci-theme-glass
 
 # mosdns（sbwml v5 分支）+ v2ray-geodata
 find ./package -maxdepth 2 | grep Makefile | grep mosdns | xargs rm -f || true
