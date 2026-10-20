@@ -32,10 +32,14 @@ git clone --depth 1 https://github.com/sbwml/v2ray-geodata package/v2ray-geodata
 
 # diy-ziyong（提供 luci-app-adguardhome / luci-app-autotimeset）
 git clone --depth 1 https://github.com/firker/diy-ziyong.git package/diy-ziyong
+# 修正 autotimeset 把 admin/system 顶层 order 顶成 44 的问题（菜单顺序）
+sed -i 's/"System", 44/"System", 20/' package/diy-ziyong/package/luci-app-autotimeset/luasrc/controller/autotimeset.lua
 
 # 零散 luci 应用
 git clone --depth 1 https://github.com/DustReliant/luci-app-filetransfer.git package/luci-app-filetransfer
 git clone --depth 1 https://github.com/linkease/istore.git package/istore
+# 修正 istore 把 admin/store order 设为 31 的问题（菜单顺序，要排在服务之后）
+sed -i 's/_("iStore"), 31/_("iStore"), 40/' package/istore/luci/luci-app-store/luasrc/controller/store.lua
 
 # OpenClash
 git clone --depth 1 --single-branch https://github.com/vernesong/OpenClash.git /tmp/OpenClash
