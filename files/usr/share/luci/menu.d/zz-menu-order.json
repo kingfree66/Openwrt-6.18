@@ -5,16 +5,16 @@
 	"admin/system": {
 		"order": 20
 	},
-	"admin/store": {
+	"admin/services": {
 		"order": 30
 	},
-	"admin/services": {
+	"admin/store": {
 		"order": 40
 	},
-	"admin/network": {
+	"admin/vpn": {
 		"order": 50
 	},
-	"admin/vpn": {
+	"admin/network": {
 		"order": 60
 	}
 }
