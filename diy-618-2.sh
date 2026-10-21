@@ -23,4 +23,9 @@ chmod +x ./files/etc/uci-defaults/99-custom-settings
 # 去掉 luci-light 对 luci-theme-bootstrap 的硬依赖（我们不用 bootstrap/material 主题）
 sed -i '/+luci-theme-bootstrap/d' ./feeds/luci/collections/luci-light/Makefile
 
+# 去掉"系统"菜单下的"插件"入口（luci-mod-system 的 admin/system/plugins）
+# 结束符只认一层缩进 /^\t},/，写宽了会先命中 action 子块闭合行、删半截毁掉整个 JSON
+sed -i '/"admin\/system\/plugins": {/,/^\t},/d' ./feeds/luci/modules/luci-mod-system/root/usr/share/luci/menu.d/luci-mod-system.json
+rm -f ./feeds/luci/modules/luci-mod-system/htdocs/luci-static/resources/view/system/plugins.js
+
 echo "DIY part 2 done"
