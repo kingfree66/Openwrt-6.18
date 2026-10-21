@@ -140,4 +140,13 @@ Signed-off-by: Daniel Golle <daniel@makrotopia.org>
 TAR_ACL_PATCH
 fi
 
+# simple-obfs 源码包哈希修正（helloworld package/ssr）
+# fw876/helloworld@cdf326ee 把 PKG_SOURCE 切回 tar.xz 并记录哈希 7a0154d2…，
+# 但该哈希是其 CI 的旧版 download.mk 打包产物；官方 main 现用 rawgit
+#（git archive + tar --mode=a-s --sort=name + xz -7e）重新打包后哈希为 da5af052…。
+# 源码本身仍是上游 shadowsocks/simple-obfs@486bebd（含 pinned 子模块 libcork），内容无变化，
+# 只是 tarball 打包格式差异导致校验失败（run 39656499052 实测 got 值）。
+sed -i 's/^PKG_MIRROR_HASH:=7a0154d2de18373e52783d1b64cf5204471049c2d2c64f0b3323d7f430aa4275$/PKG_MIRROR_HASH:=da5af052265fbfba7a11ee4195257f9bc13f44d054d8fdcbace0639360870035/' ./package/ssr/simple-obfs/Makefile
+grep -q '^PKG_MIRROR_HASH:=da5af052265fbfba7a11ee4195257f9bc13f44d054d8fdcbace0639360870035$' ./package/ssr/simple-obfs/Makefile || { echo "ERROR: simple-obfs 哈希修补失败"; exit 1; }
+
 echo "DIY part 2 done"
