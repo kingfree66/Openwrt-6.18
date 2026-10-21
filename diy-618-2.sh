@@ -31,8 +31,14 @@ rm -f ./feeds/luci/modules/luci-mod-system/htdocs/luci-static/resources/view/sys
 # 修复 tar-1.35 与 libacl 2.4.0 的符号冲突（上游 openwrt/packages PR #30837 同款补丁）
 # libacl 2.4.0 在 sys/acl.h 新增 acl_get_file_at 等 at 变体声明，与 tar 内部同名
 # 静态函数（src/xattrs.c）冲突，编译 tar 时报错；补丁把 tar 内部函数改名 tar_acl_*
-mkdir -p ./feeds/packages/utils/tar/patches
-cat > ./feeds/packages/utils/tar/patches/101-rename-acl-at-functions.patch <<'TAR_ACL_PATCH'
+# 注意：补丁正文必须带 diff 文件头（--- a/src/xattrs.c / +++ b/src/xattrs.c），
+# 2026-10-21 run 39608536547 曾因只有 hunks 无文件头，patch 报 "Only garbage was found
+# in the patch input." 而编译失败。另外若 feed 快照已含上游补丁则跳过，避免双重应用。
+if ls ./feeds/packages/utils/tar/patches/ 2>/dev/null | grep -qi 'acl' \
+    || grep -rl 'tar_acl_get_file_at' ./feeds/packages/utils/tar/ >/dev/null 2>&1; then
+  echo "tar acl fix already present in feed, skip patch"
+else
+  cat > ./feeds/packages/utils/tar/patches/001-avoid-acl_-prefix-for-functions.patch <<'TAR_ACL_PATCH'
 From abd4560c18f26296c666597ae9e8a4a44031ae5f Mon Sep 17 00:00:00 2001
 From: Pavel Cahyna <pcahyna@redhat.com>
 Date: Wed, 24 Jun 2026 18:45:30 +0200
@@ -132,5 +138,6 @@ Signed-off-by: Daniel Golle <daniel@makrotopia.org>
      }
  
 TAR_ACL_PATCH
+fi
 
 echo "DIY part 2 done"
