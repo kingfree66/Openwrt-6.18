@@ -13,40 +13,56 @@ sed -i 's/192.168.1.1/192.168.2.106/g' package/base-files/files/bin/config_gener
 sed -i "s/hostname='OpenWrt'/hostname='OpenWrt-King'/g" ./package/base-files/files/bin/config_generate
 
 # ---------- 第三方软件源 ----------
+rm -rf package/ssr
 git clone --depth 1 https://github.com/fw876/helloworld.git package/ssr
+rm -rf package/openwrt-passwall
 git clone --depth 1 https://github.com/Openwrt-Passwall/openwrt-passwall-packages.git package/openwrt-passwall
+rm -rf package/passwall
 git clone --depth 1 https://github.com/Openwrt-Passwall/openwrt-passwall.git package/passwall
+rm -rf package/passwall2
 git clone --depth 1 https://github.com/Openwrt-Passwall/openwrt-passwall2.git package/passwall2
 
 # 主题（argon / kucat 为 config 中启用的）
+rm -rf package/luci-theme-argon
 git clone --depth 1 https://github.com/jerrykuku/luci-theme-argon.git package/luci-theme-argon
+rm -rf package/luci-theme-kucat
 git clone --depth 1 https://github.com/sirpdboy/luci-theme-kucat.git package/luci-theme-kucat
+rm -rf package/luci-theme-liquid
 git clone --depth 1 https://github.com/zzsj0928/luci-theme-liquid.git package/luci-theme-liquid
+rm -rf package/luci-theme-glass
 git clone --depth 1 https://github.com/rchen14b/luci-theme-glass.git package/luci-theme-glass
 
 # mosdns（sbwml v5 分支）+ v2ray-geodata
 find ./package -maxdepth 2 | grep Makefile | grep mosdns | xargs rm -f || true
+rm -rf package/mosdns
 git clone --depth 1 https://github.com/sbwml/luci-app-mosdns -b v5 package/mosdns
 find ./package -maxdepth 2 | grep Makefile | grep v2ray-geodata | xargs rm -f || true
+rm -rf package/v2ray-geodata
 git clone --depth 1 https://github.com/sbwml/v2ray-geodata package/v2ray-geodata
 
 # diy-ziyong（提供 luci-app-adguardhome / luci-app-autotimeset）
+rm -rf package/diy-ziyong
 git clone --depth 1 https://github.com/firker/diy-ziyong.git package/diy-ziyong
 # 修正 autotimeset 把 admin/system 顶层 order 顶成 44 的问题（菜单顺序）
 sed -i 's/"System", 44/"System", 20/' package/diy-ziyong/package/luci-app-autotimeset/luasrc/controller/autotimeset.lua
 
 # 零散 luci 应用
+rm -rf package/luci-app-filetransfer
 git clone --depth 1 https://github.com/DustReliant/luci-app-filetransfer.git package/luci-app-filetransfer
+rm -rf package/istore
 git clone --depth 1 https://github.com/linkease/istore.git package/istore
 # 修正 istore 把 admin/store order 设为 31 的问题（菜单顺序，要排在服务之后）
 sed -i 's/_("iStore"), 31/_("iStore"), 40/' package/istore/luci/luci-app-store/luasrc/controller/store.lua
 
 # OpenClash
+rm -rf /tmp/OpenClash
 git clone --depth 1 --single-branch https://github.com/vernesong/OpenClash.git /tmp/OpenClash
+rm -rf package/luci-app-openclash
 mv /tmp/OpenClash/luci-app-openclash package/luci-app-openclash
 rm -rf /tmp/OpenClash
 
 # Nikki（mihomo 透明代理）：mihomo-meta 提供 mihomo 依赖，避免与 ssr-plus 的 mihomo 包冲突
+rm -rf package/nikki
 git clone --depth 1 https://github.com/nikkinikki-org/OpenWrt-nikki.git package/nikki
 sed -i 's/+mihomo$/+mihomo-meta/' package/nikki/nikki/Makefile
 grep -q '+mihomo-meta' package/nikki/nikki/Makefile || { echo "ERROR: nikki 依赖修补失败"; exit 1; }
@@ -55,6 +71,7 @@ grep -q '+mihomo-meta' package/nikki/nikki/Makefile || { echo "ERROR: nikki 依�
 rm -rf /tmp/luci-zt
 git clone --depth 1 --branch openwrt-24.10 --sparse https://github.com/coolsnowwolf/luci.git /tmp/luci-zt
 git -C /tmp/luci-zt sparse-checkout set applications/luci-app-zerotier
+rm -rf package/luci-app-zerotier
 cp -r /tmp/luci-zt/applications/luci-app-zerotier package/luci-app-zerotier
 rm -rf /tmp/luci-zt
 sed -i 's#include ../../luci.mk#include $(TOPDIR)/feeds/luci/luci.mk#' package/luci-app-zerotier/Makefile
