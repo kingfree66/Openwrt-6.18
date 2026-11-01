@@ -91,11 +91,15 @@ bash /tmp/add_turboacc.sh
 [ -d package/turboacc/luci-app-turboacc ] || { echo "ERROR: turboacc 集成失败"; exit 1; }
 [ -d package/turboacc/shortcut-fe ] || { echo "ERROR: shortcut-fe 缺失"; exit 1; }
 
-# 内核 pin 到 6.18.55：2026-10-31 上游把 6.18 从 .55 一口气升到 .60，重构了 conntrack
-# ecache API（struct net 里删掉了 nf_conntrack_chain），turboacc 自 2026-07 起停更，
-# 其 953 补丁在 6.18.60 上打不上（skbuff.h 新增 tc_depth 字段，ecache 四处 hunk 全挂）。
-# SFE 生态适配新内核前先 pin 住——2026-10-30 的 r37908 即用 .55 编过，验证通过。
-printf 'LINUX_VERSION-6.18 = .55\nLINUX_KERNEL_HASH-6.18.55 = f410638061a165c12f42ab871d2f3fcd525515359b5faeee80969cff84524df9\n' > target/linux/generic/kernel-6.18
-grep -q '^LINUX_VERSION-6.18 = .55$' target/linux/generic/kernel-6.18 || { echo "ERROR: 内核 pin 失败"; exit 1; }
+# ---------- 953 补丁适配 6.18.60 ----------
+# 上游在 6.18.60 给 struct sk_buff 加了 tc_depth 字段，turboacc 自带的原版 953
+# 补丁 skbuff.h 那处 hunk 打不上（上游 2026-07 后停更，只能本地修）。
+# 内核小版本 >= 60 时用仓库里的修复版覆盖（只动了 skbuff.h 一个 hunk 的上下文），
+# 低版本内核沿用 turboacc 原版.
+KMINOR=$(sed -n 's/^LINUX_VERSION-6.18 = \.\([0-9]\+\)/\1/p' target/linux/generic/kernel-6.18)
+if [ "${KMINOR:-0}" -ge 60 ] && [ -f "$GITHUB_WORKSPACE/953-fixed-6.18.60.patch" ]; then
+  cp -f "$GITHUB_WORKSPACE/953-fixed-6.18.60.patch" target/linux/generic/hack-6.18/953-net-patch-linux-kernel-to-support-shortcut-fe.patch
+  echo "953 补丁已替换为 6.18.60 适配版"
+fi
 
 echo "DIY part 1 done"
