@@ -82,6 +82,11 @@ git clone --depth 1 --branch v0.1.0-beta.4 https://github.com/daeuniverse/honk.g
 [ -d package/honk/src/crates ] || { echo "ERROR: honk 源码拉取失败"; exit 1; }
 [ -f package/honk/Makefile ] || { echo "ERROR: daeuniverse honk 包缺失"; exit 1; }
 [ -f package/luci-app-honk/Makefile ] || { echo "ERROR: luci-app-honk 缺失"; exit 1; }
+# 修复 honk build.sh 的 cargo PATH：OpenWrt 构建时会把自带的 host rust（1.96.0）
+# 放到 PATH 最前面，导致 build.sh 调到错的 cargo（honk 需要 rustc >= 1.98）；
+# 强制把 rustup 的 cargo bin 放到最前面（rust-toolchain.toml 的 pin 才能生效）
+sed -i '1a export PATH="$HOME/.cargo/bin:$PATH"' package/honk/build.sh
+grep -q 'cargo/bin:$PATH' package/honk/build.sh || { echo "ERROR: build.sh PATH 补丁失败"; exit 1; }
 
 # luci-app-zerotier：官方 luci 源中没有，从 coolsnowwolf/luci 取（sparse checkout）
 rm -rf /tmp/luci-zt
