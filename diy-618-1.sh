@@ -69,8 +69,19 @@ grep -q '+mihomo-meta' package/nikki/nikki/Makefile || { echo "ERROR: nikki 依�
 
 # Honk（eBPF 透明代理）：内核要求 6.12+ 且开 BTF，6.18 满足；其 Makefile 下载预编译核心，
 # 在本树编译时 kmod 依赖按本树内核生成（不用它的一键安装脚本，那个只认 25.12 的预编译包）
-rm -rf package/honk
-git clone --depth 1 https://github.com/kenzok8/openwrt-honk.git package/honk
+rm -rf package/honk package/luci-app-honk package/luci-lib-daeuniverse
+# honk 改用 daeuniverse 官方源（从源码编译）
+# 取 daeuniverse/openwrt-packages 的 honk + luci-app-honk + luci-lib-daeuniverse
+git clone --depth 1 https://github.com/daeuniverse/openwrt-packages.git /tmp/dae-feed
+cp -r /tmp/dae-feed/honk package/honk
+cp -r /tmp/dae-feed/luci-app-honk package/luci-app-honk
+cp -r /tmp/dae-feed/luci-lib-daeuniverse package/luci-lib-daeuniverse
+rm -rf /tmp/dae-feed
+# honk 上游源码（package/honk/Makefile 要求 src/ 目录，tag v0.1.0-beta.4）
+git clone --depth 1 --branch v0.1.0-beta.4 https://github.com/daeuniverse/honk.git package/honk/src
+[ -d package/honk/src/crates ] || { echo "ERROR: honk 源码拉取失败"; exit 1; }
+[ -f package/honk/Makefile ] || { echo "ERROR: daeuniverse honk 包缺失"; exit 1; }
+[ -f package/luci-app-honk/Makefile ] || { echo "ERROR: luci-app-honk 缺失"; exit 1; }
 
 # luci-app-zerotier：官方 luci 源中没有，从 coolsnowwolf/luci 取（sparse checkout）
 rm -rf /tmp/luci-zt
