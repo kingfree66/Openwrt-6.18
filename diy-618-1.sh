@@ -67,6 +67,11 @@ git clone --depth 1 https://github.com/nikkinikki-org/OpenWrt-nikki.git package/
 sed -i 's/+mihomo$/+mihomo-meta/' package/nikki/nikki/Makefile
 grep -q '+mihomo-meta' package/nikki/nikki/Makefile || { echo "ERROR: nikki 依赖修补失败"; exit 1; }
 
+# Honk（eBPF 透明代理）：内核要求 6.12+ 且开 BTF，6.18 满足；其 Makefile 下载预编译核心，
+# 在本树编译时 kmod 依赖按本树内核生成（不用它的一键安装脚本，那个只认 25.12 的预编译包）
+rm -rf package/honk
+git clone --depth 1 https://github.com/kenzok8/openwrt-honk.git package/honk
+
 # luci-app-zerotier：官方 luci 源中没有，从 coolsnowwolf/luci 取（sparse checkout）
 rm -rf /tmp/luci-zt
 git clone --depth 1 --branch openwrt-24.10 --sparse https://github.com/coolsnowwolf/luci.git /tmp/luci-zt
