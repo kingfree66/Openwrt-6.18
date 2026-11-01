@@ -91,4 +91,11 @@ bash /tmp/add_turboacc.sh
 [ -d package/turboacc/luci-app-turboacc ] || { echo "ERROR: turboacc 集成失败"; exit 1; }
 [ -d package/turboacc/shortcut-fe ] || { echo "ERROR: shortcut-fe 缺失"; exit 1; }
 
+# 内核 pin 到 6.18.55：2026-10-31 上游把 6.18 从 .55 一口气升到 .60，重构了 conntrack
+# ecache API（struct net 里删掉了 nf_conntrack_chain），turboacc 自 2026-07 起停更，
+# 其 953 补丁在 6.18.60 上打不上（skbuff.h 新增 tc_depth 字段，ecache 四处 hunk 全挂）。
+# SFE 生态适配新内核前先 pin 住——2026-10-30 的 r37908 即用 .55 编过，验证通过。
+printf 'LINUX_VERSION-6.18 = .55\nLINUX_KERNEL_HASH-6.18.55 = f410638061a165c12f42ab871d2f3fcd525515359b5faeee80969cff84524df9\n' > target/linux/generic/kernel-6.18
+grep -q '^LINUX_VERSION-6.18 = .55$' target/linux/generic/kernel-6.18 || { echo "ERROR: 内核 pin 失败"; exit 1; }
+
 echo "DIY part 1 done"
