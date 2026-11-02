@@ -58,6 +58,8 @@ jobs:
         # Python 3.12+ 移除了 distutils，OpenWrt 编译前置检查需要 setuptools
         sudo -E apt-get -qq install -y python3-pip
         pip3 install setuptools || true
+        # 内核 BTF 需要 pahole（dwarves 包），否则 CONFIG_DEBUG_INFO_BTF 会被静默禁用
+        sudo -E apt-get -qq install -y dwarves
         sudo -E apt-get -qq autoremove --purge
         sudo -E apt-get -qq clean
         sudo timedatectl set-timezone "$TZ"
