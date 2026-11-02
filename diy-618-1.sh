@@ -87,6 +87,9 @@ git clone --depth 1 --branch v0.1.0-beta.4 https://github.com/daeuniverse/honk.g
 # 强制把 rustup 的 cargo bin 放到最前面（rust-toolchain.toml 的 pin 才能生效）
 sed -i '1a export PATH="$HOME/.cargo/bin:$PATH"' package/honk/build.sh
 grep -q 'cargo/bin:$PATH' package/honk/build.sh || { echo "ERROR: build.sh PATH 补丁失败"; exit 1; }
+# 去掉 honk 对 vmlinux-btf 的依赖（daeuniverse 的预制 BTF 包；我们的内核已开 CONFIG_KERNEL_DEBUG_INFO_BTF，自带 BTF，不需要它）
+sed -i 's/+vmlinux-btf //' package/honk/Makefile
+grep -q 'vmlinux-btf' package/honk/Makefile && { echo "ERROR: vmlinux-btf 依赖去除失败"; exit 1; }
 
 # luci-app-zerotier：官方 luci 源中没有，从 coolsnowwolf/luci 取（sparse checkout）
 rm -rf /tmp/luci-zt
