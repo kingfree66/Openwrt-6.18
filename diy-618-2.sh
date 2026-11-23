@@ -149,4 +149,14 @@ fi
 sed -i 's/^PKG_MIRROR_HASH:=7a0154d2de18373e52783d1b64cf5204471049c2d2c64f0b3323d7f430aa4275$/PKG_MIRROR_HASH:=da5af052265fbfba7a11ee4195257f9bc13f44d054d8fdcbace0639360870035/' ./package/ssr/simple-obfs/Makefile
 grep -q '^PKG_MIRROR_HASH:=da5af052265fbfba7a11ee4195257f9bc13f44d054d8fdcbace0639360870035$' ./package/ssr/simple-obfs/Makefile || { echo "ERROR: simple-obfs 哈希修补失败"; exit 1; }
 
+# luci-app-ssr-plus 的 3proxy 依赖去除（helloworld package/ssr）
+# helloworld dev 分支的 luci-app-ssr-plus（v198.5 起）把 3proxy 挂在
+# INCLUDE_Http_Proxy 的条件依赖上，而 Http Proxy 在 x86_64 默认开（default y），
+# 但 3proxy 不在任何 feed 里（官方 packages feed 已移除），apk 装包时报
+# "3proxy (no such package)"，导致 package/install 失败（run 45092944077 实测）。
+# 用户实际只用 nikki，ssr-plus 的 Http Proxy 功能用不上，直接去掉这行依赖；
+# 若上游恢复提供 3proxy，可删掉本段。
+sed -i '/+PACKAGE_\$(PKG_NAME)_INCLUDE_Http_Proxy:3proxy/d' ./package/ssr/luci-app-ssr-plus/Makefile
+grep -q '3proxy' ./package/ssr/luci-app-ssr-plus/Makefile && { echo "ERROR: 3proxy 依赖去除失败"; exit 1; }
+
 echo "DIY part 2 done"
